@@ -31,3 +31,12 @@ model Episode {
   duration_minutes Int
   air_date         DateTime
 }
+
+model Show {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String
+}
