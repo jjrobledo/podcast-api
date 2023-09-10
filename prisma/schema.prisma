@@ -15,10 +15,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  username String    @unique
-  email    String    @unique
-  hash     String
-  History  History[]
+  username     String         @unique
+  email        String         @unique
+  hash         String
+  History      History[]
+  Subscription Subscription[]
 
   @@map("users")
 }
@@ -45,9 +46,10 @@ model Podcast {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title       String
-  description String
-  Episode     Episode[]
+  title        String
+  description  String
+  Episode      Episode[]
+  Subscription Subscription[]
 
   @@map("podcasts")
 }
@@ -67,4 +69,13 @@ model History {
   episode                   Episode  @relation(fields: [episodeId], references: [id])
 
   @@id([userId, episodeId])
+}
+
+model Subscription {
+  userId    Int
+  podcastId Int
+  user      User    @relation(fields: [userId], references: [id])
+  podcast   Podcast @relation(fields: [podcastId], references: [id])
+
+  @@id([userId, podcastId])
 }
