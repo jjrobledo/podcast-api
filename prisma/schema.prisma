@@ -15,11 +15,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  username     String         @unique
-  email        String         @unique
-  hash         String
-  History      History[]
-  Subscription Subscription[]
+  username         String             @unique
+  email            String             @unique
+  hash             String
+  History          History[]
+  Subscription     Subscription[]
+  ListenLater      ListenLater[]
+  PodcastUserStats PodcastUserStats[]
 
   @@map("users")
 }
@@ -36,7 +38,8 @@ model Episode {
   air_date         DateTime?
   History          History[]
 
-  podcast Podcast @relation(fields: [podcastId], references: [id])
+  podcast     Podcast       @relation(fields: [podcastId], references: [id])
+  ListenLater ListenLater[]
 
   @@map("episodes")
 }
@@ -46,11 +49,12 @@ model Podcast {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title           String
-  description     String
-  Episode         Episode[]
-  Subscription    Subscription[]
-  PodcastCategory PodcastCategory[]
+  title            String
+  description      String
+  Episode          Episode[]
+  Subscription     Subscription[]
+  PodcastCategory  PodcastCategory[]
+  PodcastUserStats PodcastUserStats[]
 
   @@map("podcasts")
 }
@@ -88,6 +92,36 @@ model Subscription {
   podcastId Int
   user      User    @relation(fields: [userId], references: [id])
   podcast   Podcast @relation(fields: [podcastId], references: [id])
+
+  @@id([userId, podcastId])
+}
+
+model ListenLater {
+  userId     Int
+  episodeId  Int
+  created_at DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  episode    Episode  @relation(fields: [episodeId], references: [id])
+
+  @@id([userId, episodeId])
+}
+
+model PodcastUserStats {
+  userId                Int
+  podcastId             Int
+  firstSubscribedAt     DateTime?
+  lastListenedAt        DateTime?
+  totalListenMinutes    Int?
+  episodesListened      Int?
+  mostListenedEpisodeId Int?
+  averageListenDuration Int?
+  completionRatio       Float?
+  favoriteListenTime    Int?
+  longestStreak         Int?
+  ranking               Int?
+
+  user    User    @relation(fields: [userId], references: [id])
+  podcast Podcast @relation(fields: [podcastId], references: [id])
 
   @@id([userId, podcastId])
 }
