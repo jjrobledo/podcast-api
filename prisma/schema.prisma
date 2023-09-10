@@ -46,17 +46,29 @@ model Podcast {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title        String
-  description  String
-  Episode      Episode[]
-  Subscription Subscription[]
+  title           String
+  description     String
+  Episode         Episode[]
+  Subscription    Subscription[]
+  PodcastCategory PodcastCategory[]
 
   @@map("podcasts")
 }
 
 model Category {
-  id    Int    @id @default(autoincrement())
-  genre String
+  id              Int               @id @default(autoincrement())
+  genre           String
+  PodcastCategory PodcastCategory[]
+}
+
+model PodcastCategory {
+  podcastId  Int
+  categoryId Int
+  podcast    Podcast @relation(fields: [podcastId], references: [id])
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@id([podcastId, categoryId])
 }
 
 model History {
