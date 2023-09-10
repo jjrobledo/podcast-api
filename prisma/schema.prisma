@@ -15,9 +15,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email    String
-  username String
+  username String    @unique
+  email    String    @unique
   hash     String
+  History  History[]
+
+  @@map("users")
 }
 
 model Episode {
@@ -27,9 +30,12 @@ model Episode {
 
   showId           String
   title            String
-  description      String
-  duration_minutes Int
-  air_date         DateTime
+  description      String?
+  duration_minutes Int?
+  air_date         DateTime?
+  History          History[]
+
+  @@map("episodes")
 }
 
 model Podcast {
@@ -39,9 +45,23 @@ model Podcast {
 
   title       String
   description String
+
+  @@map("podcasts")
 }
 
 model Genre {
   id    Int    @id @default(autoincrement())
   genre String
+}
+
+model History {
+  userId                    Int
+  episodeId                 Int
+  listened_duration_minutes Int?
+  created_at                DateTime @default(now())
+  updated_at                DateTime @default(now())
+  user                      User     @relation(fields: [userId], references: [id])
+  episode                   Episode  @relation(fields: [episodeId], references: [id])
+
+  @@id([userId, episodeId])
 }
