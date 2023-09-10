@@ -54,7 +54,7 @@ model Podcast {
   @@map("podcasts")
 }
 
-model Genre {
+model Category {
   id    Int    @id @default(autoincrement())
   genre String
 }
