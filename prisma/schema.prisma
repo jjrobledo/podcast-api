@@ -19,3 +19,15 @@ model User {
   username String
   hash     String
 }
+
+model Episode {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  showId           String
+  title            String
+  description      String
+  duration_minutes Int
+  air_date         DateTime
+}
