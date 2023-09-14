@@ -38,7 +38,7 @@ model Episode {
   air_date         DateTime?
   History          History[]
 
-  podcast     Podcast       @relation(fields: [podcastId], references: [id])
+  podcast     Podcast       @relation(fields: [podcastId], references: [id], onDelete: Cascade)
   ListenLater ListenLater[]
 
   @@map("episodes")
@@ -69,7 +69,7 @@ model Category {
 model PodcastCategory {
   podcastId  Int
   categoryId Int
-  podcast    Podcast @relation(fields: [podcastId], references: [id])
+  podcast    Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
 
   category Category @relation(fields: [categoryId], references: [id])
 
@@ -80,10 +80,10 @@ model History {
   userId                    Int
   episodeId                 Int
   listened_duration_minutes Int?
-  created_at                DateTime @default(now())
-  updated_at                DateTime @default(now())
-  user                      User     @relation(fields: [userId], references: [id])
-  episode                   Episode  @relation(fields: [episodeId], references: [id])
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @default(now())
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episode                   Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
 
   @@id([userId, episodeId])
 }
@@ -91,18 +91,18 @@ model History {
 model Subscription {
   userId    Int
   podcastId Int
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   podcast   Podcast @relation(fields: [podcastId], references: [id])
 
   @@id([userId, podcastId])
 }
 
 model ListenLater {
-  userId     Int
-  episodeId  Int
-  created_at DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
-  episode    Episode  @relation(fields: [episodeId], references: [id])
+  userId    Int
+  episodeId Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episode   Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
 
   @@id([userId, episodeId])
 }
@@ -121,8 +121,8 @@ model PodcastUserStats {
   longestStreak         Int?
   ranking               Int?
 
-  user    User    @relation(fields: [userId], references: [id])
-  podcast Podcast @relation(fields: [podcastId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  podcast Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
 
   @@id([userId, podcastId])
 }
