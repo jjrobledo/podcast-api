@@ -16,15 +16,15 @@ describe('app-e2e', () => {
 
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-    await app.init();
 
-    await app.listen(6000);
+    await app.init();
+    await app.listen(3333);
 
     prisma = app.get(PrismaService);
 
     await prisma.cleanDb();
 
-    pactum.request.setBaseUrl('http://localhost:6000');
+    pactum.request.setBaseUrl('http://localhost:3333');
   });
 
   afterAll(() => {
@@ -83,13 +83,6 @@ describe('app-e2e', () => {
     });
 
     describe('Login', () => {
-      it('should login user', () => {
-        return pactum
-          .spec()
-          .post('/auth/login')
-          .withBody(loginDto)
-          .expectStatus(200);
-      });
       it('should throw if no email', () => {
         return pactum
           .spec()
@@ -107,19 +100,34 @@ describe('app-e2e', () => {
       it('should throw if no email or password', () => {
         return pactum.spec().post('/auth/login').expectStatus(400);
       });
+      it('should login user', () => {
+        return pactum
+          .spec()
+          .post('/auth/login')
+          .withBody(loginDto)
+          .expectStatus(200)
+          .stores('Token', 'accessToken');
+      });
     });
   });
-});
+  describe('User', () => {
+    describe('Get user', () => {
+      it('Should get current user', () => {
+        return pactum
+          .spec()
+          .get('/users/home')
+          .withBearerToken('$S{Token}')
+          .expectStatus(200);
+      });
+    });
+    describe('Edit user', () => {});
+    describe('Delete user', () => {});
+  });
 
-describe('User', () => {
-  describe('Get user', () => {});
-  describe('Edit user', () => {});
-  describe('Delete user', () => {});
-});
-
-describe('Bookmarks', () => {
-  describe('Register Podcast', () => {});
-  describe('Get podcast by id', () => {});
-  describe('Edit podcast by id', () => {});
-  describe('Delete podcast by id', () => {});
+  describe('Bookmarks', () => {
+    describe('Register Podcast', () => {});
+    describe('Get podcast by id', () => {});
+    describe('Edit podcast by id', () => {});
+    describe('Delete podcast by id', () => {});
+  });
 });
