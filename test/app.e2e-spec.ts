@@ -1,8 +1,9 @@
-import { addWaitHandler } from 'pactum/src/exports/handler';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
+import * as pactum from 'pactum';
+import { LoginUserDto, RegisterUserDto } from '../src/auth/dto';
 
 describe('app-e2e', () => {
   let app: INestApplication;
@@ -17,9 +18,13 @@ describe('app-e2e', () => {
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     await app.init();
 
+    await app.listen(6000);
+
     prisma = app.get(PrismaService);
 
     await prisma.cleanDb();
+
+    pactum.request.setBaseUrl('http://localhost:6000');
   });
 
   afterAll(() => {
@@ -27,22 +32,94 @@ describe('app-e2e', () => {
   });
 
   describe('Auth', () => {
+    const registerDto: RegisterUserDto = {
+      username: 'user1',
+      email: 'user1@email.com',
+      password: 'user1',
+    };
+
+    const loginDto: LoginUserDto = {
+      email: 'user1@email.com',
+      password: 'user1',
+    };
+
     describe('Register', () => {
-      it.todo('should register');
+      it('should register user', () => {
+        return pactum
+          .spec()
+          .post('/auth/register')
+          .withBody(registerDto)
+          .expectStatus(201);
+      });
+      it('should throw if no username', () => {
+        const { username, ...rest } = registerDto;
+
+        return pactum
+          .spec()
+          .post('/auth/register')
+          .withBody(rest)
+          .expectStatus(400);
+      });
+      it('should throw if no email', () => {
+        const { email, ...rest } = registerDto;
+        return pactum
+          .spec()
+          .post('/auth/register')
+          .withBody(rest)
+          .expectStatus(400);
+      });
+      it('should throw if no password', () => {
+        const { password, ...rest } = registerDto;
+
+        return pactum
+          .spec()
+          .post('/auth/register')
+          .withBody(rest)
+          .expectStatus(400);
+      });
+      it('should throw if no username or email or password', () => {
+        return pactum.spec().post('/auth/register').expectStatus(400);
+      });
     });
-    describe('Login', () => {});
-  });
 
-  describe('User', () => {
-    describe('Get user', () => {});
-    describe('Edit user', () => {});
-    describe('Delete user', () => {});
+    describe('Login', () => {
+      it('should login user', () => {
+        return pactum
+          .spec()
+          .post('/auth/login')
+          .withBody(loginDto)
+          .expectStatus(200);
+      });
+      it('should throw if no email', () => {
+        return pactum
+          .spec()
+          .post('/auth/login')
+          .withBody(loginDto.password)
+          .expectStatus(400);
+      });
+      it('should throw if no password', () => {
+        return pactum
+          .spec()
+          .post('/auth/login')
+          .withBody(loginDto.email)
+          .expectStatus(400);
+      });
+      it('should throw if no email or password', () => {
+        return pactum.spec().post('/auth/login').expectStatus(400);
+      });
+    });
   });
+});
 
-  describe('Bookmarks', () => {
-    describe('Register Podcast', () => {});
-    describe('Get podcast by id', () => {});
-    describe('Edit podcast by id', () => {});
-    describe('Delete podcast by id', () => {});
-  });
+describe('User', () => {
+  describe('Get user', () => {});
+  describe('Edit user', () => {});
+  describe('Delete user', () => {});
+});
+
+describe('Bookmarks', () => {
+  describe('Register Podcast', () => {});
+  describe('Get podcast by id', () => {});
+  describe('Edit podcast by id', () => {});
+  describe('Delete podcast by id', () => {});
 });

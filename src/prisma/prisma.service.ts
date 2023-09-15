@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
-import * as url from 'url';
 
 @Injectable()
 export class PrismaService extends PrismaClient {
