@@ -5,11 +5,11 @@ import { CreatePodcastDto, EditPodcastDto } from './dto';
 export class PodcastService {
   createPodcast(userId: number, dto: CreatePodcastDto) {}
 
-  getPodcast(userId: number) {}
+  getPodcasts(userId: number) {}
 
   getPodcastById(userId: number, podcastId: number) {}
 
-  editPodcastById(userId: number, dto: EditPodcastDto) {}
+  editPodcastById(userId: number, podcastId: number, dto: EditPodcastDto) {}
 
   deletePodcastById(userId: number, podcastId: number) {}
 }

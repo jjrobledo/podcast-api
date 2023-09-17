@@ -13,26 +13,44 @@ import { JwtGuard } from '../auth/guard';
 import { PodcastService } from './podcast.service';
 import { GetUser } from '../auth/decorator';
 import { CreatePodcastDto } from '../user/dto/dto';
+import { EditPodcastDto } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('podcasts')
 export class BookmarkController {
   constructor(private podcastService: PodcastService) {}
   @Post()
-  createPodcast(@GetUser() userId: number, @Body() dto: CreatePodcastDto) {}
+  createPodcast(@GetUser() userId: number, @Body() dto: CreatePodcastDto) {
+    return this.podcastService.createPodcast(userId, dto);
+  }
 
   @Get()
-  getPodcast(@GetUser() userId: number) {}
+  getPodcasts(@GetUser() userId: number) {
+    return this.podcastService.getPodcasts(userId);
+  }
 
   @Get(':id')
   getPodcastById(
     @GetUser() userId: number,
     @Param('id', ParseIntPipe) podcastId: number,
-  ) {}
+  ) {
+    return this.podcastService.getPodcastById(userId, podcastId);
+  }
 
-  @Patch()
-  editPodcastById(@GetUser() userId: number) {}
+  @Patch(':id')
+  editPodcastById(
+    @GetUser() userId: number,
+    @Param('id', ParseIntPipe) podcastId: number,
+    @Body() dto: EditPodcastDto,
+  ) {
+    return this.podcastService.editPodcastById(userId, podcastId, dto);
+  }
 
-  @Delete()
-  deletePodcastById(@GetUser() userId: number) {}
+  @Delete(':id')
+  deletePodcastById(
+    @GetUser() userId: number,
+    @Param('id', ParseIntPipe) podcastId: number,
+  ) {
+    return this.podcastService.deletePodcastById(userId, podcastId);
+  }
 }
