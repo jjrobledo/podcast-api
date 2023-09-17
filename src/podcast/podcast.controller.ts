@@ -5,24 +5,32 @@ import {
   Delete,
   Get,
   UseGuards,
+  Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { JwtGuard } from '../auth/guard';
+import { PodcastService } from './podcast.service';
+import { GetUser } from '../auth/decorator';
 
 @UseGuards(JwtGuard)
 @Controller('podcasts')
 export class BookmarkController {
+  constructor(private podcastService: PodcastService) {}
   @Post()
-  createPodcast() {}
+  createPodcast(@GetUser() userId: number) {}
 
   @Get()
-  getPodcast() {}
+  getPodcast(@GetUser() userId: number) {}
 
-  @Get()
-  getPodcastById() {}
+  @Get(':id')
+  getPodcastById(
+    @GetUser() userId: number,
+    @Param('id', ParseIntPipe) podcastId: number,
+  ) {}
 
   @Patch()
-  editPodcastById() {}
+  editPodcastById(@GetUser() userId: number) {}
 
   @Delete()
-  deletePodcastById() {}
+  deletePodcastById(@GetUser() userId: number) {}
 }
