@@ -1,4 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class PodcastService {}
+export class PodcastService {
+  createPodcast() {}
+
+  getPodcast() {}
+
+  getPodcastById() {}
+
+  editPodcastById() {}
+
+  deletePodcastById() {}
+}
