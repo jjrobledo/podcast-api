@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { CreatePodcastDto, EditPodcastDto } from './dto';
 
 @Injectable()
 export class PodcastService {
-  createPodcast() {}
+  createPodcast(userId: number, dto: CreatePodcastDto) {}
 
-  getPodcast() {}
+  getPodcast(userId: number) {}
 
-  getPodcastById() {}
+  getPodcastById(userId: number, podcastId: number) {}
 
-  editPodcastById() {}
+  editPodcastById(userId: number, dto: EditPodcastDto) {}
 
-  deletePodcastById() {}
+  deletePodcastById(userId: number, podcastId: number) {}
 }
+g;
