@@ -5,6 +5,7 @@ import { PrismaService } from '../src/prisma/prisma.service';
 import * as pactum from 'pactum';
 import { LoginUserDto, RegisterUserDto } from '../src/auth/dto';
 import { EditUserDto } from '../src/user/dto';
+import { CreatePodcastDto } from '../src/podcast/dto';
 
 describe('app-e2e', () => {
   let app: INestApplication;
@@ -138,8 +139,30 @@ describe('app-e2e', () => {
     });
   });
 
-  describe('Bookmarks', () => {
-    describe('Register Podcast', () => {});
+  describe('Podcasts', () => {
+    describe('Get Podcasts when no podcasts added', () => {
+      it('Should get empty list of podcasts', () => {
+        return pactum
+          .spec()
+          .get('/podcasts')
+          .withBearerToken('$S{Token}')
+          .expectStatus(200)
+          .expectBody([]);
+      });
+    });
+    describe('Register Podcast', () => {
+      it('Should register a new podcast', () => {
+        const dto: CreatePodcastDto = {
+          rssFeedUrl: 'www.rssfeed.com/feed/asfasdf;lkjasdf',
+        };
+        return pactum
+          .spec()
+          .post('/podcasts')
+          .withBearerToken('${Token}')
+          .withBody(dto)
+          .expectStatus(201);
+      });
+    });
     describe('Get podcast by id', () => {});
     describe('Edit podcast by id', () => {});
     describe('Delete podcast by id', () => {});

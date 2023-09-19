@@ -18,6 +18,7 @@ model User {
   username         String             @unique
   email            String             @unique
   hash             String
+  podcasts         Podcast[]
   History          History[]
   Subscription     Subscription[]
   ListenLater      ListenLater[]
@@ -56,6 +57,8 @@ model Podcast {
   Subscription     Subscription[]
   PodcastCategory  PodcastCategory[]
   PodcastUserStats PodcastUserStats[]
+  User             User?              @relation(fields: [userId], references: [id])
+  userId           Int?
 
   @@map("podcasts")
 }

@@ -12,12 +12,11 @@ import {
 import { JwtGuard } from '../auth/guard';
 import { PodcastService } from './podcast.service';
 import { GetUser } from '../auth/decorator';
-import { CreatePodcastDto } from '../user/dto/dto';
-import { EditPodcastDto } from './dto';
+import { CreatePodcastDto, EditPodcastDto } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('podcasts')
-export class BookmarkController {
+export class PodcastController {
   constructor(private podcastService: PodcastService) {}
   @Post()
   createPodcast(@GetUser() userId: number, @Body() dto: CreatePodcastDto) {
@@ -25,7 +24,7 @@ export class BookmarkController {
   }
 
   @Get()
-  getPodcasts(@GetUser() userId: number) {
+  getPodcasts(@GetUser('id') userId: number) {
     return this.podcastService.getPodcasts(userId);
   }
 
